@@ -23,4 +23,15 @@ COPY --from=build /helloworld/target/helloworld.war /usr/local/tomcat/webapps/
 ENV JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"
 EXPOSE 8080
 EXPOSE 8000
-CMD ["catalina.sh", "jpda", "run"]
+ENTRYPOINT ["catalina.sh", "jpda", "run"]
+
+# Twistlock Container Defender - app embedded
+ADD twistlock_defender_app_embedded.tar.gz /tmp
+ENV DEFENDER_TYPE="appEmbedded"
+ENV DEFENDER_APP_ID="s4s"
+ENV FILESYSTEM_MONITORING="true"
+ENV WS_ADDRESS="wss://asia-southeast1.cloud.twistlock.com:443"
+ENV DATA_FOLDER="/tmp"
+ENV INSTALL_BUNDLE="eyJzZWNyZXRzIjp7InNlcnZpY2UtcGFyYW1ldGVyIjoiNFY3U1F3Yjh3eURreS9LKzVJa0E1NUZBVUQvK3dicHYzZWpkQXFNRmpKTGNVeTZkMWwrVHIvUUZ2cFJzT2p4b1FaK2J4TlQwb2JRK0FCbnVLTEEzS2c9PSJ9LCJnbG9iYWxQcm94eU9wdCI6eyJodHRwUHJveHkiOiIiLCJub1Byb3h5IjoiIiwiY2EiOiIiLCJ1c2VyIjoiIiwicGFzc3dvcmQiOnsiZW5jcnlwdGVkIjoiIn19LCJjdXN0b21lcklEIjoiYXdzLXNpbmdhcG9yZS05NjExNDk3NTgiLCJhcGlLZXkiOiJIRE1Ka3Q4cXlLZkFkN0l2ZmtLNDUwZUpuVDQrQkFXd213WTlVdWNWMk15STVub2Q1UVZpcHpOQzZWdkM2WHFPT1E3S1BXOGNweHlPU2VKakN5dmF0dz09IiwibWljcm9zZWdDb21wYXRpYmxlIjpmYWxzZSwiaW1hZ2VTY2FuSUQiOiIwN2FlZDJhYS1kNDgwLTVjMzAtNjBkNC01NzdhMGMwMmZmYjIifQ=="
+ENV FIPS_ENABLED="false"
+ENTRYPOINT ["/tmp/defender", "app-embedded", "catalina.sh", "jpda", "run"]
